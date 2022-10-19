@@ -7,7 +7,7 @@
 Creating a user
 - Create a new user account 
 	- Must be 21 or older
-	- First name, lastname, email, username, password, password confirm 
+	- First name, lastname, email, birthday, username, password, password confirm 
 
 Authenticating Users
 - Log into an account
