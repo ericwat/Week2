@@ -2,19 +2,21 @@
 
 public class Program
 {
+    // Menu items passed as messages
     private const int REGISTRATION = 1;
     private const int LOGIN = 2;
     private const int BOOK = 3;
     private const int EXIT = 9;
     
+    // Data models
     private static User? _user;
     private static Account? _account;
     private static Booking? _booking; 
 
-    private static readonly UserService _userService = new UserService();
-    private static readonly AccountService _accountService = new AccountService(_userService);
+    // Services that perform most of the functionality
+    private static readonly AccountService _accountService = new AccountService();
+    private static readonly UserService _userService = new UserService(_accountService);
     private static readonly BookingService _rideService = new BookingService();
-
     
     public static void Main(string[] args)
     {
@@ -56,11 +58,17 @@ public class Program
         }
     }
 
+    /// <summary>
+    /// Sets the title of the app
+    /// </summary>
     private static void SetTitle()
     {
         Console.WriteLine("Run Me Over - Book a ride");
     }
   
+    /// <summary>
+    /// Displays the main menu
+    /// </summary>
     private static void ShowMainMenu()
     {
         Console.WriteLine("1. Create user account");
@@ -69,28 +77,31 @@ public class Program
         Console.WriteLine("9. Exit");
     }
     
+    /// <summary>
+    /// Displays the prompts for registering a new user in an account
+    /// </summary>
     private static void ShowRegistrationScreen()
     {
         Console.WriteLine("Enter first name");
-        _user.FirstName = Console.ReadLine();
+        _account.FirstName = Console.ReadLine();
         Console.WriteLine("Enter last name");
-        _user.LastName = Console.ReadLine();
+        _account.LastName = Console.ReadLine();
         Console.WriteLine("Enter email name");
-        _user.Email = Console.ReadLine();
+        _account.Email = Console.ReadLine();
         Console.WriteLine("Enter birthday (MM/DD/YYYY)");
-        _user.Birthday = DateTime.Parse(Console.ReadLine() ?? String.Empty);
+        _account.Birthday = DateTime.Parse(Console.ReadLine() ?? String.Empty);
         Console.WriteLine("Enter username");
-        _user.Username = Console.ReadLine();
+        _account.Username = Console.ReadLine();
         Console.WriteLine("Enter password");
-        _user.Password = Console.ReadLine();
+        _account.Password = Console.ReadLine();
         Console.WriteLine("Enter password again");
-        _user.PasswordConfirm = Console.ReadLine();
-        var isRegsitered = _userService.Register(_user);
+        _account.PasswordConfirm = Console.ReadLine();
+        var isRegsitered = _accountService.Register(_account);
         Console.Clear();
         
         if (isRegsitered)
         {
-            Console.WriteLine($@"You are registered {_user.Username}\n");
+            Console.WriteLine($@"You are registered {_account.Username}");
         }
         else
         {
@@ -101,12 +112,21 @@ public class Program
     private static void ShowLoginScreen()
     {
         Console.WriteLine("Enter username");
-        _account.Username = Console.ReadLine();
+        _user.Username = Console.ReadLine();
         Console.WriteLine("Enter password");
-        _account.Password = Console.ReadLine();
-        var isLoggedIn = _accountService.Login(_account);
+        _user.Password = Console.ReadLine();
+        var isLoggedIn = _userService.Login(_user);
         Console.Clear();
-        Console.WriteLine($@"You are logged in {_user.Username}\n");
+        
+        if (isLoggedIn)
+        {
+            Console.WriteLine($@"You are logged in {_user.Username}");
+        }
+        else
+        {
+            Console.WriteLine("Username or password is invalid. Try again");
+        }
+
     }
     
     private static void ShowBookingScreen()
@@ -116,7 +136,7 @@ public class Program
         Console.WriteLine("Enter date (MM/DD/YYYY)");
         _booking.Date = DateTime.Parse(Console.ReadLine() ?? String.Empty);
         Console.Clear();
-        Console.WriteLine($@"Your ride in a {_booking.Vehicle} will be available on {_booking.Date}\n");
+        Console.WriteLine($@"Your ride in a {_booking.Vehicle} will be available on {_booking.Date}");
     }
 
     private static void ShowRetry()

@@ -1,36 +1,23 @@
-using System.Diagnostics;
-
 namespace RunMeOver;
 
-public class UserService : IUserService
+public class UserService 
 {
-    private List<User> _users;
-
-    public UserService()
+    private IAccountService _accountService;
+    public UserService(IAccountService accountService)
     {
-        _users = new List<User>();
+        _accountService = accountService;
     }
-
-    public bool Register(User user)
+    public bool Login(User user)
     {
-        bool isValidated;
-        isValidated = this.ValidateAge(user.Birthday);
-        
-        if (isValidated)
+        bool result = false;
+        var matched = _accountService.Find(user);
+        if (matched != null)
         {
-            _users.Add(user);
+            result = true;
         }
 
-        return isValidated;
+        return result;
     }
 
-    public User? Find(string username)
-    {
-        return _users.Find(u => u.Username == username);
-    }
 
-    private bool ValidateAge(DateTime birthday)
-    {
-        return DateTime.Today.Subtract(birthday) >= TimeSpan.FromDays(21 * 365) ? true : false;
-    }
 }
